@@ -13,9 +13,6 @@ frontend/.env.local
 frontend/dist/
 .vercel
 
-# Backend (old)
-backend/
-
 # Database
 *.db
 *.sqlite
