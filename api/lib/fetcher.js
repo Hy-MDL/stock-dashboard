@@ -1,4 +1,4 @@
-import yahooFinance from 'yahoo-finance2';
+import yahooFinance from 'yahoo-finance2/dist/esm/src/index-node.js';
 import { supabase } from './supabase.js';
 
 export async function fetchStockData(ticker, days = 90) {
