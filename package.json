@@ -8,8 +8,7 @@
     "deploy": "vercel --prod"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
-    "yahoo-finance2": "^2.11.3"
+    "@supabase/supabase-js": "^2.39.0"
   },
   "devDependencies": {
     "@vercel/node": "^3.0.0"

@@ -1,18 +1,37 @@
-import yahooFinance from 'yahoo-finance2/dist/esm/src/index-node.js';
 import { supabase } from './supabase.js';
+
+// Direct Yahoo Finance API fetch (no library needed)
+async function fetchYahooData(ticker, days = 90) {
+  const endDate = Math.floor(Date.now() / 1000);
+  const startDate = endDate - (days * 24 * 60 * 60);
+
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?period1=${startDate}&period2=${endDate}&interval=1d`;
+
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (!data.chart || !data.chart.result || !data.chart.result[0]) {
+    throw new Error(`No data for ${ticker}`);
+  }
+
+  const result = data.chart.result[0];
+  const timestamps = result.timestamp;
+  const quotes = result.indicators.quote[0];
+
+  return timestamps.map((timestamp, i) => ({
+    date: new Date(timestamp * 1000),
+    open: quotes.open[i],
+    high: quotes.high[i],
+    low: quotes.low[i],
+    close: quotes.close[i],
+    volume: quotes.volume[i]
+  })).filter(row => row.open && row.close); // Filter out invalid data
+}
 
 export async function fetchStockData(ticker, days = 90) {
   try {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    // Fetch daily data
-    const dailyData = await yahooFinance.historical(ticker, {
-      period1: startDate,
-      period2: endDate,
-      interval: '1d'
-    });
+    // Fetch daily data using direct API call
+    const dailyData = await fetchYahooData(ticker, days);
 
     // Insert daily data
     for (const row of dailyData) {
