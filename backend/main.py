@@ -368,6 +368,59 @@ def get_kospi_data(week_number: int):
         } for p in prices]
     }
 
+@app.post("/api/sync")
+def sync_data():
+    """Admin: Manually sync all stock data using yfinance and store in Supabase."""
+    try:
+        import yfinance as yf
+        from database_supabase import StockSelection, DailyPrice
+
+        # 1. Get all unique tickers from stock selections
+        # We'll use a raw query or the helper if available
+        response = supabase.table('stock_selection').select('ticker').execute()
+        tickers = list(set([r['ticker'] for r in response.data]))
+        
+        # Add KOSPI index to sync list
+        if "^KS11" not in tickers:
+            tickers.append("^KS11")
+
+        logger.info(f"Syncing data for tickers: {tickers}")
+
+        count = 0
+        for ticker in tickers:
+            try:
+                stock = yf.Ticker(ticker)
+                # Fetch last 3 months to ensure we cover the week range
+                df = stock.history(period="3mo", interval="1d", auto_adjust=False)
+                
+                if df.empty:
+                    logger.warning(f"No data found for {ticker}")
+                    continue
+
+                for date, row in df.iterrows():
+                    formatted_date = date.strftime('%Y-%m-%d')
+                    
+                    # Upsert to Supabase
+                    supabase.table('daily_price').upsert({
+                        'ticker': ticker,
+                        'date': formatted_date,
+                        'open': float(row["Open"]),
+                        'high': float(row["High"]),
+                        'low': float(row["Low"]),
+                        'close': float(row["Close"]),
+                        'volume': int(row["Volume"])
+                    }, on_conflict='ticker,date').execute()
+                
+                count += 1
+                logger.info(f"Successfully synced {ticker}")
+            except Exception as ticker_err:
+                logger.error(f"Error syncing ticker {ticker}: {ticker_err}")
+
+        return {"message": f"Sync completed. Updated {count} stocks."}
+    except Exception as e:
+        logger.error(f"Sync overall error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

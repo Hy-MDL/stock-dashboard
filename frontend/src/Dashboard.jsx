@@ -32,13 +32,17 @@ const Dashboard = () => {
     try {
       const res = await axios.get(`${API_BASE}/weeks`);
       setWeeks(res.data);
-      if (res.data.length > 0) {
+      if (res.data && res.data.length > 0) {
         setSelectedWeek(res.data[res.data.length - 1].week_number);
+        // Fetch all weeks data for comparison chart
+        fetchAllWeeksComparison(res.data);
+      } else {
+        // No weeks found, stop loading
+        setLoading(false);
       }
-      // Fetch all weeks data for comparison chart
-      fetchAllWeeksComparison(res.data);
     } catch (err) {
       console.error("Error fetching weeks", err);
+      setLoading(false);
     }
   };
 
