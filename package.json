@@ -1,0 +1,17 @@
+{
+  "name": "student-stock-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "cd frontend && npm run build",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "yahoo-finance2": "^2.11.3"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.0.0"
+  }
+}

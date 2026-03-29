@@ -1,0 +1,170 @@
+:root {
+  --apple-bg: #f5f5f7;
+  --apple-card-bg: rgba(255, 255, 255, 0.82);
+  --apple-text: #1d1d1f;
+  --apple-text-secondary: #86868b;
+  --apple-blue: #0071e3;
+  --apple-purple: #9b59b6;
+  --apple-green: #2ecc71;
+  --apple-red: #ff3b30;
+  --apple-border: rgba(0, 0, 0, 0.08);
+  --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Myriad Set Pro", "SF Pro Icons", "Apple Graphics", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-apple);
+  background: var(--apple-bg);
+  color: var(--apple-text);
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.glass-card {
+  background: var(--apple-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--apple-border);
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.01);
+  padding: 32px;
+  margin-bottom: 24px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.yield-up { color: var(--apple-green); }
+.yield-down { color: var(--apple-red); }
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ranking-table th {
+  text-align: left;
+  color: var(--apple-text-secondary);
+  font-weight: 500;
+  padding: 12px;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.ranking-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: 600;
+  background: var(--apple-bg);
+}
+
+.rank-1 { background: #ffd700; color: #fff; box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+.rank-2 { background: #c0c0c0; color: #fff; }
+.rank-3 { background: #cd7f32; color: #fff; }
+
+.podium {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 64px;
+}
+
+.podium-item {
+  text-align: center;
+  flex: 1;
+  max-width: 280px;
+}
+
+.podium-card {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.podium-1 { height: 260px; order: 2; }
+.podium-2 { height: 220px; order: 1; }
+.podium-3 { height: 180px; order: 3; }
+
+@media (max-width: 768px) {
+  h1 { font-size: 36px; }
+  .podium { flex-direction: column; align-items: stretch; }
+  .podium-item { order: initial !important; height: auto !important; }
+}
+
+.toggle-btn {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--apple-border);
+  background: white;
+  color: var(--apple-text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn.active {
+  background: var(--apple-blue);
+  color: white;
+  border-color: var(--apple-blue);
+}
+
+.toggle-btn:hover:not(.active) {
+  background: #f0f0f2;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
