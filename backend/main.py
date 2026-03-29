@@ -373,10 +373,16 @@ def sync_data():
     """Admin: Manually sync all stock data using yfinance and store in Supabase."""
     try:
         import yfinance as yf
+        import requests
         from database_supabase import StockSelection, DailyPrice
 
+        # Setup session with User-Agent to avoid being blocked
+        session = requests.Session()
+        session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        })
+
         # 1. Get all unique tickers from stock selections
-        # We'll use a raw query or the helper if available
         response = supabase.table('stock_selection').select('ticker').execute()
         tickers = list(set([r['ticker'] for r in response.data]))
         
@@ -389,8 +395,9 @@ def sync_data():
         count = 0
         for ticker in tickers:
             try:
-                stock = yf.Ticker(ticker)
-                # Fetch last 3 months to ensure we cover the week range
+                # Pass session to Ticker
+                stock = yf.Ticker(ticker, session=session)
+                # Fetch last 3 months
                 df = stock.history(period="3mo", interval="1d", auto_adjust=False)
                 
                 if df.empty:
@@ -400,7 +407,6 @@ def sync_data():
                 for date, row in df.iterrows():
                     formatted_date = date.strftime('%Y-%m-%d')
                     
-                    # Upsert to Supabase
                     supabase.table('daily_price').upsert({
                         'ticker': ticker,
                         'date': formatted_date,
