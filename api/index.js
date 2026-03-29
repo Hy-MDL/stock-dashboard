@@ -25,7 +25,16 @@ export default async function handler(req, res) {
 
   try {
     const { pathParts, query } = parsePath(req.url);
-    const [resource, id, action] = pathParts;
+
+    // Check query params first (for /api?resource URLs)
+    let resource = pathParts[0];
+    let id = pathParts[1];
+    let action = pathParts[2];
+
+    // If no path but has query params, use first query key as resource
+    if (!resource && Object.keys(query).length > 0) {
+      resource = Object.keys(query)[0];
+    }
 
     // Route to appropriate handler
     switch (resource) {
@@ -46,11 +55,11 @@ export default async function handler(req, res) {
       case 'sync':
         return await handleSync(req, res);
       default:
-        return res.status(404).json({ error: 'Not found' });
+        return res.status(404).json({ error: 'Not found', resource, url: req.url });
     }
   } catch (error) {
     console.error('API Error:', error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message, stack: error.stack });
   }
 }
 
