@@ -1,6 +1,8 @@
 # Dependencies
 node_modules/
 frontend/node_modules/
+venv/
+dashboard/backend/venv/
 
 # Environment variables
 .env
@@ -17,6 +19,7 @@ frontend/dist/
 *.db
 *.sqlite
 *.sqlite3
+dashboard/backend/database.db
 
 # Logs
 *.log

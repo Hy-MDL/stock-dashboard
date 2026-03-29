@@ -1,11 +1,22 @@
 import os
+import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
 from database_supabase import supabase
 
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = FastAPI(title="Student Stock Dashboard API")
+
+@app.on_event("startup")
+async def startup_event():
+    port = os.environ.get("PORT", "8000")
+    logger.info(f"--- Server starting up on port {port} ---")
+    logger.info(f"--- Supabase client initialized ---")
 
 app.add_middleware(
     CORSMiddleware,
