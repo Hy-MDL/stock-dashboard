@@ -1,7 +1,6 @@
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-supabase==2.3.0
+supabase==2.10.0
 yfinance==0.2.35
 pandas==2.1.4
-schedule==1.2.1
 python-dotenv==1.0.0
